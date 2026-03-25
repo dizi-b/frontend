@@ -16,7 +16,7 @@
       .chart {
         display: flex;
         gap: 20px;
-        height: 240px;
+        height: 350px;
         align-items: flex-end;
         margin-bottom: 20px;
       }
@@ -54,24 +54,28 @@
   </head>
 
   <body>
-    <h1>Biểu đồ ESP32</h1>
+    <h1 style="color: rgb(255, 1, 1)">
+      <b
+        >Thông số nhiệt độ và độ ẩm <br />
+        sử dụng cảm biến DHT22</b
+      >
+    </h1>
 
     <div class="row">
       <!-- BIỂU ĐỒ NHIỆT ĐỘ -->
       <div class="chart-block">
-        <h2>Nhiệt độ (°C)</h2>
+        <h2 style="color: orange"><b>Nhiệt độ (°C)</b></h2>
         <div id="tempChart" class="chart"></div>
       </div>
 
       <!-- BIỂU ĐỒ ĐỘ ẨM -->
       <div class="chart-block">
-        <h2>Độ ẩm (%)</h2>
+        <h2 style="color: steelblue"><b>Độ ẩm (%)</b></h2>
         <div id="humChart" class="chart"></div>
       </div>
     </div>
 
     <script>
-      /* 🔥 ĐỔI URL này thành URL server Render của bạn */
       const SERVER = "https://esp32-backend-dbgk.onrender.com";
 
       function createBar(value, time, isHumidity) {
@@ -103,8 +107,7 @@
         });
       }
 
-      // Tải dữ liệu mỗi 1 giây
-      setInterval(loadCharts, 1000);
+      setInterval(loadCharts, 500);
       loadCharts();
     </script>
   </body>
