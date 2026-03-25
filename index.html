@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      /* Khung chứa 2 biểu đồ để xếp ngang */
+      .row {
+        display: flex;
+        gap: 50px; /* khoảng cách giữa 2 biểu đồ */
+        align-items: flex-start;
+      }
+
+      .chart-block {
+        width: 300px;
+      }
+
+      .chart {
+        display: flex;
+        gap: 20px;
+        height: 240px;
+        align-items: flex-end;
+        margin-bottom: 20px;
+      }
+
+      .bar-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .bar {
+        width: 40px;
+        background: orange;
+        text-align: center;
+        color: white;
+        border-radius: 5px 5px 0 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        padding-bottom: 5px;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      .humidity {
+        background: steelblue;
+      }
+
+      .time-label {
+        margin-top: 8px;
+        font-size: 13px;
+        color: #333;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Biểu đồ ESP32</h1>
+
+    <div class="row">
+      <!-- BIỂU ĐỒ NHIỆT ĐỘ -->
+      <div class="chart-block">
+        <h2>Nhiệt độ (°C)</h2>
+        <div id="tempChart" class="chart"></div>
+      </div>
+
+      <!-- BIỂU ĐỒ ĐỘ ẨM -->
+      <div class="chart-block">
+        <h2>Độ ẩm (%)</h2>
+        <div id="humChart" class="chart"></div>
+      </div>
+    </div>
+
+    <script>
+      /* 🔥 ĐỔI URL này thành URL server Render của bạn */
+      const SERVER = "https://esp32-backend-dbgk.onrender.com";
+
+      function createBar(value, time, isHumidity) {
+        const barHeight = value * 3; // scale cho chiều cao
+
+        return `
+          <div class="bar-container">
+            <div class="bar ${isHumidity ? "humidity" : ""}" style="height: ${barHeight}px">
+              ${value}${isHumidity ? "%" : "°C"}
+            </div>
+            <div class="time-label">${time}</div>
+          </div>
+        `;
+      }
+
+      async function loadCharts() {
+        const res = await fetch(`${SERVER}/history`);
+        const data = await res.json();
+
+        const tempChart = document.getElementById("tempChart");
+        const humChart = document.getElementById("humChart");
+
+        tempChart.innerHTML = "";
+        humChart.innerHTML = "";
+
+        data.forEach((item) => {
+          tempChart.innerHTML += createBar(item.temp, item.time, false);
+          humChart.innerHTML += createBar(item.hum, item.time, true);
+        });
+      }
+
+      // Tải dữ liệu mỗi 1 giây
+      setInterval(loadCharts, 1000);
+      loadCharts();
+    </script>
+  </body>
+</html>
